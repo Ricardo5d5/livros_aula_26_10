@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import application.models.Livro;
 import application.repositories.LivroRepository;
@@ -26,7 +27,7 @@ public class LivroController {
   public String formInsert(){
     return "insert.jsp";
   }
-  @RequestMapping(value="/insert", method=RequestMethod.POST)
+  @RequestMapping(value = "/insert", method=RequestMethod.POST)
   public String saveInsert(@RequestParam("titulo") String titulo){
 
     Livro livro = new Livro();
@@ -34,6 +35,14 @@ public class LivroController {
     livrosRepo.save(livro);
     return "redirect:/livro/list";
   }
+  @RequestMapping("/delete/{id}")
+  public String formDeelte(Model model, @PathVariable int id){
+    Optional<Livro> livro = livrosRepo.findById(id);
+    if (!livro.isPresent())
+      return "redirect:/livro/list";
+    model.addAttribute("livro", livro.get());
 
+    return "livro/delete.jsp";
+  }
 
 }
